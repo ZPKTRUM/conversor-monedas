@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversor de Monedas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Conversor de Monedas</h1>
+    <form id="converter-form">
+        <input type="number" step="0.01" id="amount" placeholder="Cantidad" required>
+        <select id="base">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="CLP">CLP</option>
+            <!-- Agrega más monedas si deseas -->
+        </select>
+        a
+        <select id="target">
+            <option value="CLP">CLP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+        </select>
+        <button type="submit">Convertir</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('converter-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const amount = document.getElementById('amount').value;
+            const base = document.getElementById('base').value;
+            const target = document.getElementById('target').value;
+
+            const response = await fetch('/convert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, base, target })
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+            if (data.result !== undefined) {
+                resultDiv.textContent = `Resultado: ${data.result} ${target}`;
+            } else {
+                resultDiv.textContent = `Error: ${data.error}`;
+            }
+        });
+    </script>
+</body>
+</html>
